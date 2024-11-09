@@ -7,9 +7,7 @@ Welcome to my university assignments repository! This repository contains code a
 - [About](#about)
 - [Assignments](#assignments)
 - [Technologies](#technologies)
-- [Usage](#usage)
-- [License](#license)
-
+  
 ## About
 
 This repository serves as a collection of programming assignments, projects, and homework from my university courses. Each folder in this repository corresponds to an individual assignment, containing source code, related data files, and any necessary documentation.
