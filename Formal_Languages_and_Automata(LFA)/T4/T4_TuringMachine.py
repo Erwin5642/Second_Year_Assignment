@@ -1,3 +1,6 @@
+from time import sleep
+
+
 class TuringMachine:
     def __init__(self, states, initialState, acceptState, rejectState, alphabet, tapeAlphabet, deltaFunction):
         self.states = states
@@ -11,26 +14,20 @@ class TuringMachine:
     def run(self, inputString):
         # Inicializa a fita com os símbolos do string de entrada
         tape = list(inputString)
-
+        tape.insert(0, '<')
+        tape.append('_')
+        tape.append('_')
         currentState = self.initialState
-        headPosition = 0
-
+        headPosition = 1
+        print(f"\033[{33}m{tape[:headPosition]}\033[0m", end='')
+        print(f"\033[{34}m{tape[headPosition:headPosition + 1]}\033[0m", end='')
+        print(f"\033[{33}m{tape[headPosition + 1:]}\033[0m", end='')
         # A máquina funciona até que um estado de aceitação ou rejeição seja encontrado
         while True:
             if currentState == self.acceptState:
-                print(f"Fita: {tape}")
-                return "Accepted"
+                return "Aceito"
             if currentState == self.rejectState:
-                print(f"Fita: {tape}")
-                return "Rejected"
-
-            # Se as operações excederam a nossa fita finita, estendemos ela
-            # para que ela se virtualmente infinita
-            if headPosition < 0:
-                tape.insert(0, '_')
-                headPosition = 0
-            if headPosition >= len(tape):
-                tape.append('_')
+                return "Rejeitado"
 
             # Le o simbolo na cabeça de entrada
             headSymbol = tape[headPosition]
@@ -39,19 +36,34 @@ class TuringMachine:
             # Assumimos que a string é rejeitada
             transition = (currentState, headSymbol)
             if transition not in self.deltaFunction:
-                print(f"Fita: {tape}")
-                return "Rejected"
-
+                return "Rejeitado"
             newState, writeSymbol, direction = self.deltaFunction[transition]
             # Escrevemos o símbolo na fita de acordo com a transição
-            tape[headPosition] = writeSymbol
+            if writeSymbol is not None:
+                tape[headPosition] = writeSymbol
+            print(f"\r\033[{33}m{tape[:headPosition]}\033[0m", end='')
+            print(f"\033[{34}m{tape[headPosition:headPosition + 1]}\033[0m", end='')
+            print(f"\033[{33}m{tape[headPosition + 1:]}\033[0m", end='')
+            sleep(0.5)
             # Movemos a cabeça para a direção indicada
-            if direction == 'L':
+            if direction == 'E':
                 headPosition -= 1
-            elif direction == 'R':
+            elif direction == 'D':
                 headPosition += 1
-
             currentState = newState
+
+            # Se as operações excederam a nossa fita finita, estendemos ela
+            # para que ela se virtualmente infinita
+            if headPosition < 0:
+                print("Erro: Limite esquerdo da fita excedido!")
+                return "Rejeitado"
+            if headPosition + 1 >= len(tape):
+                tape.append('_')
+            print(f"\r\033[{33}m{tape[:headPosition]}\033[0m", end='')
+            print(f"\033[{34}m{tape[headPosition:headPosition + 1]}\033[0m", end='')
+            print(f"\033[{33}m{tape[headPosition + 1:]}\033[0m", end='')
+            sleep(0.5)
+
 
 
 def readTransitions(states, acceptState, rejectState, tapeAlphabet):
@@ -75,8 +87,13 @@ def readTransitions(states, acceptState, rejectState, tapeAlphabet):
                         erro = "Estado inválido!"
                     elif writeSymbol == "" or writeSymbol not in tapeAlphabet:
                         erro = "Simbolo de fita inválido!"
-                    elif direction == "" or direction not in ['L', 'R']:
-                        erro = "Direção deve ser 'L' ou 'R'"
+                    elif direction == "" or direction not in ['E', 'D']:
+                        if direction == 'e':
+                            direction = 'E'
+                        elif direction == 'd':
+                            direction = 'D'
+                        else:
+                            erro = "Direção deve ser 'E' ou 'D'"
 
                     # Se passar por todos os testes a transição é dita como válida
                     if erro == "":
@@ -134,7 +151,7 @@ def createTuringMachine():
         rejectState = input("Insira estado de rejeição: ").strip()
         erro = ""
         if rejectState == "":
-            erro = "Nenhum estado de rejeição foi informado!"
+            rejectState = "n" + acceptState
         elif rejectState not in states:
             erro = "Estado não corresponde a nenhum estado declarado anteriormente!"
         if erro == "":
@@ -153,11 +170,16 @@ def createTuringMachine():
 
     # Símbolos de fita
     while True:
-        tapeAlphabet = input("Insira os símbolos de fita (ex: 0,1,2,x,y,_): ").split(',')
+        print("Simbolos branco '_' e delimitador da fita a esquerda '<' inseridos automaticamente.")
+        tapeAlphabet = input("Insira o restante dos símbolos de fita (ex: 0,1,2,x,y): ").split(',')
         tapeAlphabet = [symbol.strip() for symbol in tapeAlphabet]
         if tapeAlphabet == [""]:
             print("Nenhum símbolo de fita foi informado!")
         else:
+            if '_' not in tapeAlphabet:
+                tapeAlphabet.append('_')
+            if '<' not in tapeAlphabet:
+                tapeAlphabet.append('<')
             break
 
     # Função de transição
@@ -190,7 +212,7 @@ def main():
         if choice == '1':
             inputString = input("Insira uma string de entrada: ").strip()
             result = tm.run(inputString)
-            print(f"Resultado: {result}")
+            print(f"\nResultado: {result}")
         elif choice == '2':
             tm = createTuringMachine()  # Criando uma nova Máquina de Turing
         elif choice == '3':
