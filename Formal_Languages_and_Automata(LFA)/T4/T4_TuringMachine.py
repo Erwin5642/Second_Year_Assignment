@@ -1,5 +1,5 @@
 from time import sleep
-
+import json
 
 class TuringMachine:
     def __init__(self, states, initialState, acceptState, rejectState, alphabet, tapeAlphabet, deltaFunction):
@@ -13,15 +13,19 @@ class TuringMachine:
 
     def run(self, inputString):
         # Inicializa a fita com os símbolos do string de entrada
+
         tape = list(inputString)
         tape.insert(0, '<')
         tape.append('_')
         tape.append('_')
         currentState = self.initialState
         headPosition = 1
-        print(f"\033[{33}m{tape[:headPosition]}\033[0m", end='')
-        print(f"\033[{34}m{tape[headPosition:headPosition + 1]}\033[0m", end='')
-        print(f"\033[{33}m{tape[headPosition + 1:]}\033[0m", end='')
+
+        print(f"\033[34m{tape[:1]}\033[0m", end="")
+        print(f"\033[32m{tape[1:2]}\033[0m", end="")
+        print(f"\033[34m{tape[2:]}\033[0m", end="")
+        sleep(0.3)
+
         # A máquina funciona até que um estado de aceitação ou rejeição seja encontrado
         while True:
             if currentState == self.acceptState:
@@ -41,10 +45,12 @@ class TuringMachine:
             # Escrevemos o símbolo na fita de acordo com a transição
             if writeSymbol is not None:
                 tape[headPosition] = writeSymbol
-            print(f"\r\033[{33}m{tape[:headPosition]}\033[0m", end='')
-            print(f"\033[{34}m{tape[headPosition:headPosition + 1]}\033[0m", end='')
-            print(f"\033[{33}m{tape[headPosition + 1:]}\033[0m", end='')
-            sleep(0.5)
+
+            print(f"\r\033[34m{tape[:headPosition]}\033[0m", end="")
+            print(f"\033[32m{tape[headPosition:headPosition + 1]}\033[0m", end="")
+            print(f"\033[34m{tape[headPosition + 1:]}\033[0m", end="")
+            sleep(0.3)
+
             # Movemos a cabeça para a direção indicada
             if direction == 'E':
                 headPosition -= 1
@@ -59,11 +65,10 @@ class TuringMachine:
                 return "Rejeitado"
             if headPosition + 1 >= len(tape):
                 tape.append('_')
-            print(f"\r\033[{33}m{tape[:headPosition]}\033[0m", end='')
-            print(f"\033[{34}m{tape[headPosition:headPosition + 1]}\033[0m", end='')
-            print(f"\033[{33}m{tape[headPosition + 1:]}\033[0m", end='')
-            sleep(0.5)
-
+            print(f"\r\033[34m{tape[:headPosition]}\033[0m", end="")
+            print(f"\033[32m{tape[headPosition:headPosition+1]}\033[0m", end="")
+            print(f"\033[34m{tape[headPosition+1:]}\033[0m", end="")
+            sleep(0.3)
 
 
 def readTransitions(states, acceptState, rejectState, tapeAlphabet):
@@ -185,42 +190,79 @@ def createTuringMachine():
     # Função de transição
     deltaFunction = readTransitions(states, acceptState, rejectState, tapeAlphabet)
 
-    # Create Turing Machine object
+    # Junta tudo para criar a máquina de Turing
     tm = TuringMachine(states, initialState, acceptState, rejectState, alphabet, tapeAlphabet, deltaFunction)
 
     return tm
 
+def saveTuringMachine(tm, filename):
+    data = {
+        "states": tm.states,
+        "initialState": tm.initialState,
+        "acceptState": tm.acceptState,
+        "rejectState": tm.rejectState,
+        "alphabet": tm.alphabet,
+        "tapeAlphabet": tm.tapeAlphabet,
+        "deltaFunction": {str(k): v for k, v in tm.deltaFunction.items()},
+    }
+    with open(filename, "w") as file:
+        json.dump(data, file, indent=4)
+    print(f"Máquina de Turing salva em '{filename}'.")
+
+def loadTuringMachine(filename):
+    with open(filename, "r") as file:
+        data = json.load(file)
+    deltaFunction = {eval(k): tuple(v) for k, v in data["deltaFunction"].items()}
+    return TuringMachine(
+        data["states"],
+        data["initialState"],
+        data["acceptState"],
+        data["rejectState"],
+        data["alphabet"],
+        data["tapeAlphabet"],
+        deltaFunction,
+    )
 
 def displayMenu():
     print("\nMenu:")
     print("1. Simule")
-    print("2. Construa uma nova Maquina de Turing")
-    print("3. Encerrar programa")
-
+    print("2. Construa uma nova Máquina de Turing")
+    print("3. Salvar Máquina de Turing")
+    print("4. Carregar Máquina de Turing")
+    print("5. Encerrar programa")
 
 def main():
     tm = None
 
     while True:
-        if tm is None:
-            print("\nConstruindo uma Maquina de Turing.")
-            tm = createTuringMachine()
-
         displayMenu()
         choice = input("Escolha uma opção: ").strip()
 
         if choice == '1':
-            inputString = input("Insira uma string de entrada: ").strip()
-            result = tm.run(inputString)
-            print(f"\nResultado: {result}")
+            if tm is None:
+                print("Nenhuma Máquina foi criada ou carregada ainda! Insira uma no programa antes de simular.")
+            else:
+                inputString = input("Insira uma string de entrada: ").strip()
+                result = tm.run(inputString)
+                print(f"\nResultado: {result}")
         elif choice == '2':
-            tm = createTuringMachine()  # Criando uma nova Máquina de Turing
+            print("Criando Maquina de Turing")
+            tm = createTuringMachine()
         elif choice == '3':
+            filename = input("Insira o nome do arquivo para salvar (ex: maquina.json): ").strip()
+            saveTuringMachine(tm, filename)
+        elif choice == '4':
+            filename = input("Insira o nome do arquivo para carregar (ex: maquina.json): ").strip()
+            try:
+                tm = loadTuringMachine(filename)
+                print(f"Máquina de Turing carregada de '{filename}'.")
+            except FileNotFoundError:
+                print(f"Erro: Arquivo '{filename}' não encontrado.")
+        elif choice == '5':
             print("Encerrando programa...")
             break
         else:
             print("Escolha inválida. Tente novamente.")
-
 
 if __name__ == "__main__":
     main()

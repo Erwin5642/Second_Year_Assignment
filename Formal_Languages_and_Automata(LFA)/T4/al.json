@@ -1,0 +1,35 @@
+{
+    "states": [
+        "a",
+        "b",
+        "c"
+    ],
+    "initialState": "a",
+    "acceptState": "b",
+    "rejectState": "c",
+    "alphabet": [
+        "0"
+    ],
+    "tapeAlphabet": [
+        "0",
+        "_",
+        "<"
+    ],
+    "deltaFunction": {
+        "('a', '0')": [
+            "b",
+            "_",
+            "D"
+        ],
+        "('a', '_')": [
+            "c",
+            "_",
+            "D"
+        ],
+        "('a', '<')": [
+            "c",
+            "<",
+            "D"
+        ]
+    }
+}

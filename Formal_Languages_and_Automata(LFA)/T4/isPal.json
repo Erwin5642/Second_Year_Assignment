@@ -1,0 +1,209 @@
+{
+    "states": [
+        "s",
+        "FowA",
+        "FowB",
+        "RecA",
+        "RecB",
+        "Back",
+        "isPal",
+        "isNotPal"
+    ],
+    "initialState": "s",
+    "acceptState": "isPal",
+    "rejectState": "isNotPal",
+    "alphabet": [
+        "a",
+        "b"
+    ],
+    "tapeAlphabet": [
+        "a",
+        "b",
+        "x",
+        "y",
+        "_",
+        "<"
+    ],
+    "deltaFunction": {
+        "('s', 'a')": [
+            "FowA",
+            "x",
+            "D"
+        ],
+        "('s', 'b')": [
+            "FowB",
+            "y",
+            "D"
+        ],
+        "('s', 'x')": [
+            "isPal",
+            "x",
+            "D"
+        ],
+        "('s', 'y')": [
+            "isPal",
+            "y",
+            "D"
+        ],
+        "('s', '_')": [
+            "isPal",
+            "_",
+            "D"
+        ],
+        "('s', '<')": [
+            "isPal",
+            "<",
+            "D"
+        ],
+        "('FowA', 'a')": [
+            "FowA",
+            "a",
+            "D"
+        ],
+        "('FowA', 'b')": [
+            "FowA",
+            "b",
+            "D"
+        ],
+        "('FowA', 'x')": [
+            "RecA",
+            "x",
+            "E"
+        ],
+        "('FowA', 'y')": [
+            "RecA",
+            "y",
+            "E"
+        ],
+        "('FowA', '_')": [
+            "RecA",
+            "_",
+            "E"
+        ],
+        "('FowA', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ],
+        "('FowB', 'a')": [
+            "FowB",
+            "a",
+            "D"
+        ],
+        "('FowB', 'b')": [
+            "FowB",
+            "b",
+            "D"
+        ],
+        "('FowB', 'x')": [
+            "RecB",
+            "x",
+            "E"
+        ],
+        "('FowB', 'y')": [
+            "RecB",
+            "y",
+            "E"
+        ],
+        "('FowB', '_')": [
+            "RecB",
+            "_",
+            "E"
+        ],
+        "('FowB', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ],
+        "('RecA', 'a')": [
+            "Back",
+            "x",
+            "E"
+        ],
+        "('RecA', 'b')": [
+            "isNotPal",
+            "b",
+            "D"
+        ],
+        "('RecA', 'x')": [
+            "isNotPal",
+            "x",
+            "D"
+        ],
+        "('RecA', 'y')": [
+            "isNotPal",
+            "y",
+            "D"
+        ],
+        "('RecA', '_')": [
+            "isNotPal",
+            "_",
+            "D"
+        ],
+        "('RecA', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ],
+        "('RecB', 'a')": [
+            "isNotPal",
+            "a",
+            "E"
+        ],
+        "('RecB', 'b')": [
+            "Back",
+            "y",
+            "E"
+        ],
+        "('RecB', 'x')": [
+            "isNotPal",
+            "x",
+            "D"
+        ],
+        "('RecB', 'y')": [
+            "isNotPal",
+            "y",
+            "D"
+        ],
+        "('RecB', '_')": [
+            "isNotPal",
+            "_",
+            "D"
+        ],
+        "('RecB', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ],
+        "('Back', 'a')": [
+            "Back",
+            "a",
+            "E"
+        ],
+        "('Back', 'b')": [
+            "Back",
+            "b",
+            "E"
+        ],
+        "('Back', 'x')": [
+            "s",
+            "x",
+            "D"
+        ],
+        "('Back', 'y')": [
+            "s",
+            "y",
+            "D"
+        ],
+        "('Back', '_')": [
+            "isNotPal",
+            "_",
+            "D"
+        ],
+        "('back', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ]
+    }
+}
