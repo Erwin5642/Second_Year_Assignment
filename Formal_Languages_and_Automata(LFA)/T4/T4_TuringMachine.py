@@ -20,7 +20,7 @@ class TuringMachine:
         tape.append('_')
         currentState = self.initialState
         headPosition = 1
-
+        print(f"Estado atual: \033[36m{currentState}\033[0m Fita:" , end="")
         print(f"\033[34m{tape[:1]}\033[0m", end="")
         print(f"\033[32m{tape[1:2]}\033[0m", end="")
         print(f"\033[34m{tape[2:]}\033[0m", end="")
@@ -45,8 +45,8 @@ class TuringMachine:
             # Escrevemos o símbolo na fita de acordo com a transição
             if writeSymbol is not None:
                 tape[headPosition] = writeSymbol
-
-            print(f"\r\033[34m{tape[:headPosition]}\033[0m", end="")
+            print(f"\rEstado atual: \033[36m{currentState}\033[0m Fita:", end="")
+            print(f"\033[34m{tape[:headPosition]}\033[0m", end="")
             print(f"\033[32m{tape[headPosition:headPosition + 1]}\033[0m", end="")
             print(f"\033[34m{tape[headPosition + 1:]}\033[0m", end="")
             sleep(0.3)
@@ -65,7 +65,8 @@ class TuringMachine:
                 return "Rejeitado"
             if headPosition + 1 >= len(tape):
                 tape.append('_')
-            print(f"\r\033[34m{tape[:headPosition]}\033[0m", end="")
+            print(f"\rEstado atual: \033[36m{currentState}\033[0m Fita:", end="")
+            print(f"\033[34m{tape[:headPosition]}\033[0m", end="")
             print(f"\033[32m{tape[headPosition:headPosition+1]}\033[0m", end="")
             print(f"\033[34m{tape[headPosition+1:]}\033[0m", end="")
             sleep(0.3)
@@ -82,7 +83,7 @@ def readTransitions(states, acceptState, rejectState, tapeAlphabet):
                     transitionInput = input(f"({state}, {symbol}) [formato: novoEstado,novoSimbolo,direção]: ")
                     if not transitionInput:
                         # Define a transição para o estado de rejeição caso nada seja informado
-                        deltaFunction[(state, symbol)] = (None, None, None)
+                        deltaFunction[(state, symbol)] = (rejectState, symbol, 'D')
                         break
 
                     newState, writeSymbol, direction = transitionInput.split(',')
@@ -157,6 +158,7 @@ def createTuringMachine():
         erro = ""
         if rejectState == "":
             rejectState = "n" + acceptState
+            states.append(rejectState)
         elif rejectState not in states:
             erro = "Estado não corresponde a nenhum estado declarado anteriormente!"
         if erro == "":
@@ -205,11 +207,15 @@ def saveTuringMachine(tm, filename):
         "tapeAlphabet": tm.tapeAlphabet,
         "deltaFunction": {str(k): v for k, v in tm.deltaFunction.items()},
     }
+    if not filename.endswith(".json"):
+        filename += ".json"
     with open(filename, "w") as file:
         json.dump(data, file, indent=4)
     print(f"Máquina de Turing salva em '{filename}'.")
 
 def loadTuringMachine(filename):
+    if not filename.endswith(".json"):
+        filename += ".json"
     with open(filename, "r") as file:
         data = json.load(file)
     deltaFunction = {eval(k): tuple(v) for k, v in data["deltaFunction"].items()}
@@ -249,10 +255,10 @@ def main():
             print("Criando Maquina de Turing")
             tm = createTuringMachine()
         elif choice == '3':
-            filename = input("Insira o nome do arquivo para salvar (ex: maquina.json): ").strip()
+            filename = input("Insira o nome do arquivo para salvar (ex: Tm_Exemplo): ").strip()
             saveTuringMachine(tm, filename)
         elif choice == '4':
-            filename = input("Insira o nome do arquivo para carregar (ex: maquina.json): ").strip()
+            filename = input("Insira o nome do arquivo para carregar (ex: Tm_Exemplo): ").strip()
             try:
                 tm = loadTuringMachine(filename)
                 print(f"Máquina de Turing carregada de '{filename}'.")
