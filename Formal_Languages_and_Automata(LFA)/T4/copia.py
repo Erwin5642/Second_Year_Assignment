@@ -1,7 +1,7 @@
 from time import sleep
 import json
 
-showAll = False
+showAll = True
 
 class TuringMachine:
     def __init__(self, states, initialState, acceptState, rejectState, alphabet, tapeAlphabet, deltaFunction):
