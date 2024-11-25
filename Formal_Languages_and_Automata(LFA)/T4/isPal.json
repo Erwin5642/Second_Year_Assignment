@@ -3,8 +3,10 @@
         "s",
         "FowA",
         "FowB",
+        "FowC",
         "RecA",
         "RecB",
+        "RecC",
         "Back",
         "isPal",
         "isNotPal"
@@ -14,13 +16,16 @@
     "rejectState": "isNotPal",
     "alphabet": [
         "a",
-        "b"
+        "b",
+        "c"
     ],
     "tapeAlphabet": [
         "a",
         "b",
+        "c",
         "x",
         "y",
+        "z",
         "_",
         "<"
     ],
@@ -35,6 +40,11 @@
             "y",
             "D"
         ],
+        "('s', 'c')": [
+            "FowC",
+            "z",
+            "D"
+        ],
         "('s', 'x')": [
             "isPal",
             "x",
@@ -43,6 +53,11 @@
         "('s', 'y')": [
             "isPal",
             "y",
+            "D"
+        ],
+        "('s', 'z')": [
+            "isPal",
+            "z",
             "D"
         ],
         "('s', '_')": [
@@ -65,6 +80,11 @@
             "b",
             "D"
         ],
+        "('FowA', 'c')": [
+            "FowA",
+            "c",
+            "D"
+        ],
         "('FowA', 'x')": [
             "RecA",
             "x",
@@ -73,6 +93,11 @@
         "('FowA', 'y')": [
             "RecA",
             "y",
+            "E"
+        ],
+        "('FowA', 'z')": [
+            "RecA",
+            "z",
             "E"
         ],
         "('FowA', '_')": [
@@ -95,6 +120,11 @@
             "b",
             "D"
         ],
+        "('FowB', 'c')": [
+            "FowB",
+            "c",
+            "D"
+        ],
         "('FowB', 'x')": [
             "RecB",
             "x",
@@ -105,12 +135,57 @@
             "y",
             "E"
         ],
+        "('FowB', 'z')": [
+            "RecB",
+            "z",
+            "E"
+        ],
         "('FowB', '_')": [
             "RecB",
             "_",
             "E"
         ],
         "('FowB', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ],
+        "('FowC', 'a')": [
+            "FowC",
+            "a",
+            "D"
+        ],
+        "('FowC', 'b')": [
+            "FowC",
+            "b",
+            "D"
+        ],
+        "('FowC', 'c')": [
+            "FowC",
+            "c",
+            "D"
+        ],
+        "('FowC', 'x')": [
+            "RecC",
+            "x",
+            "E"
+        ],
+        "('FowC', 'y')": [
+            "RecC",
+            "y",
+            "E"
+        ],
+        "('FowC', 'z')": [
+            "RecC",
+            "z",
+            "E"
+        ],
+        "('FowC', '_')": [
+            "RecC",
+            "_",
+            "E"
+        ],
+        "('FowC', '<')": [
             "isNotPal",
             "<",
             "D"
@@ -125,14 +200,24 @@
             "b",
             "D"
         ],
-        "('RecA', 'x')": [
+        "('RecA', 'c')": [
             "isNotPal",
+            "c",
+            "D"
+        ],
+        "('RecA', 'x')": [
+            "isPal",
             "x",
             "D"
         ],
         "('RecA', 'y')": [
             "isNotPal",
             "y",
+            "D"
+        ],
+        "('RecA', 'z')": [
+            "isNotPal",
+            "z",
             "D"
         ],
         "('RecA', '_')": [
@@ -148,12 +233,17 @@
         "('RecB', 'a')": [
             "isNotPal",
             "a",
-            "E"
+            "D"
         ],
         "('RecB', 'b')": [
             "Back",
             "y",
             "E"
+        ],
+        "('RecB', 'c')": [
+            "isNotPal",
+            "c",
+            "D"
         ],
         "('RecB', 'x')": [
             "isNotPal",
@@ -161,8 +251,13 @@
             "D"
         ],
         "('RecB', 'y')": [
-            "isNotPal",
+            "isPal",
             "y",
+            "D"
+        ],
+        "('RecB', 'z')": [
+            "isNotPal",
+            "z",
             "D"
         ],
         "('RecB', '_')": [
@@ -171,6 +266,46 @@
             "D"
         ],
         "('RecB', '<')": [
+            "isNotPal",
+            "<",
+            "D"
+        ],
+        "('RecC', 'a')": [
+            "isNotPal",
+            "a",
+            "D"
+        ],
+        "('RecC', 'b')": [
+            "isNotPal",
+            "b",
+            "D"
+        ],
+        "('RecC', 'c')": [
+            "Back",
+            "z",
+            "E"
+        ],
+        "('RecC', 'x')": [
+            "isNotPal",
+            "x",
+            "D"
+        ],
+        "('RecC', 'y')": [
+            "isNotPal",
+            "y",
+            "D"
+        ],
+        "('RecC', 'z')": [
+            "isPal",
+            "z",
+            "D"
+        ],
+        "('RecC', '_')": [
+            "isNotPal",
+            "_",
+            "D"
+        ],
+        "('RecC', '<')": [
             "isNotPal",
             "<",
             "D"
@@ -185,6 +320,11 @@
             "b",
             "E"
         ],
+        "('Back', 'c')": [
+            "Back",
+            "c",
+            "E"
+        ],
         "('Back', 'x')": [
             "s",
             "x",
@@ -193,6 +333,11 @@
         "('Back', 'y')": [
             "s",
             "y",
+            "D"
+        ],
+        "('Back', 'z')": [
+            "s",
+            "z",
             "D"
         ],
         "('Back', '_')": [

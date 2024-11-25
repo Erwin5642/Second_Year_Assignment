@@ -24,7 +24,7 @@ class TuringMachine:
         print(f"\033[34m{tape[:1]}\033[0m", end="")
         print(f"\033[32m{tape[1:2]}\033[0m", end="")
         print(f"\033[34m{tape[2:]}\033[0m", end="")
-        sleep(0.3)
+        sleep(0.5)
 
         # A máquina funciona até que um estado de aceitação ou rejeição seja encontrado
         while True:
@@ -49,7 +49,7 @@ class TuringMachine:
             print(f"\033[34m{tape[:headPosition]}\033[0m", end="")
             print(f"\033[32m{tape[headPosition:headPosition + 1]}\033[0m", end="")
             print(f"\033[34m{tape[headPosition + 1:]}\033[0m", end="")
-            sleep(0.3)
+            sleep(0.5)
 
             # Movemos a cabeça para a direção indicada
             if direction == 'E':
@@ -69,7 +69,7 @@ class TuringMachine:
             print(f"\033[34m{tape[:headPosition]}\033[0m", end="")
             print(f"\033[32m{tape[headPosition:headPosition+1]}\033[0m", end="")
             print(f"\033[34m{tape[headPosition+1:]}\033[0m", end="")
-            sleep(0.3)
+            sleep(0.5)
 
 
 def readTransitions(states, acceptState, rejectState, tapeAlphabet):
@@ -86,20 +86,30 @@ def readTransitions(states, acceptState, rejectState, tapeAlphabet):
                         deltaFunction[(state, symbol)] = (rejectState, symbol, 'D')
                         break
 
-                    newState, writeSymbol, direction = transitionInput.split(',')
+                    transitionInput = transitionInput.split(',')
                     erro = ""
-                    # Valida cada parte do input
-                    if newState == "" or newState not in states:
-                        erro = "Estado inválido!"
-                    elif writeSymbol == "" or writeSymbol not in tapeAlphabet:
-                        erro = "Simbolo de fita inválido!"
-                    elif direction == "" or direction not in ['E', 'D']:
-                        if direction == 'e':
-                            direction = 'E'
-                        elif direction == 'd':
-                            direction = 'D'
-                        else:
-                            erro = "Direção deve ser 'E' ou 'D'"
+                    newState = ""
+                    writeSymbol = ""
+                    direction = ""
+                    if len(transitionInput) == 3:
+                        direction = transitionInput[2].strip()
+                        writeSymbol = transitionInput[1].strip()
+                        newState = transitionInput[0].strip()
+                        # Valida cada parte do input
+                        if newState == "" or newState not in states:
+                            erro = "Estado inválido!"
+                        elif writeSymbol == "" or writeSymbol not in tapeAlphabet:
+                            erro = "Simbolo de fita inválido!"
+                        elif direction == "" or direction not in ['E', 'D']:
+                            if direction == 'e':
+                                direction = 'E'
+                            elif direction == 'd':
+                                direction = 'D'
+                            else:
+                                erro = "Direção deve ser 'E' ou 'D'"
+                    else:
+                        erro = "Quantidade de argumentos para transição inválida!"
+
 
                     # Se passar por todos os testes a transição é dita como válida
                     if erro == "":
@@ -214,8 +224,10 @@ def saveTuringMachine(tm, filename):
     print(f"Máquina de Turing salva em '{filename}'.")
 
 def loadTuringMachine(filename):
+    # Se a extensão não foi adicionada, concatene ela
     if not filename.endswith(".json"):
         filename += ".json"
+    # Abrir o arquivo
     with open(filename, "r") as file:
         data = json.load(file)
     deltaFunction = {eval(k): tuple(v) for k, v in data["deltaFunction"].items()}
@@ -233,9 +245,21 @@ def displayMenu():
     print("\nMenu:")
     print("1. Simule")
     print("2. Construa uma nova Máquina de Turing")
-    print("3. Salvar Máquina de Turing")
-    print("4. Carregar Máquina de Turing")
-    print("5. Encerrar programa")
+    print("3. Mostrar dados da Máquina de Turing")
+    print("4. Salvar Máquina de Turing")
+    print("5. Carregar Máquina de Turing")
+    print("6. Encerrar programa")
+
+def displayTuringMachine(TuringMachine):
+    print(f"Estados: {TuringMachine.states}")
+    print(f"Estado Inicial: {TuringMachine.initialState}")
+    print(f"Estado de Aceitação: {TuringMachine.acceptState}")
+    print(f"Estado de Rejeição: {TuringMachine.rejectState}")
+    print(f"Alfabeto: {TuringMachine.alphabet}")
+    print(f"Alfabeto de fita: {TuringMachine.tapeAlphabet}")
+    print("Função de Transição:")
+    for transition in TuringMachine.deltaFunction:
+        print(f"{transition} -> {TuringMachine.deltaFunction[transition]}")
 
 def main():
     tm = None
@@ -255,16 +279,21 @@ def main():
             print("Criando Maquina de Turing")
             tm = createTuringMachine()
         elif choice == '3':
+            if tm is None:
+                print("Não há nenhuma máquina no programa ainda para mostrar.")
+            else:
+                displayTuringMachine(tm)
+        elif choice == '4':
             filename = input("Insira o nome do arquivo para salvar (ex: Tm_Exemplo): ").strip()
             saveTuringMachine(tm, filename)
-        elif choice == '4':
+        elif choice == '5':
             filename = input("Insira o nome do arquivo para carregar (ex: Tm_Exemplo): ").strip()
             try:
                 tm = loadTuringMachine(filename)
                 print(f"Máquina de Turing carregada de '{filename}'.")
             except FileNotFoundError:
                 print(f"Erro: Arquivo '{filename}' não encontrado.")
-        elif choice == '5':
+        elif choice == '6':
             print("Encerrando programa...")
             break
         else:
