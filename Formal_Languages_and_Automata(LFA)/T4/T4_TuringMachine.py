@@ -187,12 +187,15 @@ def createTuringMachine():
 
     # Símbolos de fita
     while True:
-        print("Simbolos branco '_' e delimitador da fita a esquerda '<' inseridos automaticamente.")
-        tapeAlphabet = input("Insira o restante dos símbolos de fita (ex: 0,1,2,x,y): ").split(',')
+        print("Simbolos branco '_', delimitador da fita a esquerda '<' e símbolos do alfabeto de entrada inseridos automaticamente.")
+        tapeAlphabet = input("Insira os símbolos de fita (ex: 0,1,2,x,y): ").split(',')
         tapeAlphabet = [symbol.strip() for symbol in tapeAlphabet]
         if tapeAlphabet == [""]:
             print("Nenhum símbolo de fita foi informado!")
         else:
+            for i in range(len(alphabet) - 1, -1, -1):
+                if alphabet[i] not in tapeAlphabet:
+                    tapeAlphabet.insert(0, alphabet[i])
             if '_' not in tapeAlphabet:
                 tapeAlphabet.append('_')
             if '<' not in tapeAlphabet:
