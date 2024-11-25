@@ -1,7 +1,8 @@
 from time import sleep
 import json
 
-showAll = False
+showAll = True
+sleepTime = 0.5
 
 class TuringMachine:
     def __init__(self, states, initialState, acceptState, rejectState, alphabet, tapeAlphabet, deltaFunction):
@@ -28,7 +29,7 @@ class TuringMachine:
         print(f"\033[34m{tape[:1]}\033[0m", end="")
         print(f"\033[32m{tape[1:2]}\033[0m", end="")
         print(f"\033[34m{tape[2:]}\033[0m", end="")
-        sleep(0.5)
+        sleep(sleepTime)
 
         # A máquina funciona até que um estado de aceitação ou rejeição seja encontrado
         while True:
@@ -55,7 +56,7 @@ class TuringMachine:
             print(f"\033[34m{tape[:headPosition]}\033[0m", end="")
             print(f"\033[32m{tape[headPosition:headPosition + 1]}\033[0m", end="")
             print(f"\033[34m{tape[headPosition + 1:]}\033[0m", end="")
-            sleep(0.5)
+            sleep(sleepTime)
 
             # Movemos a cabeça para a direção indicada
             if direction == 'E':
@@ -77,7 +78,7 @@ class TuringMachine:
             print(f"\033[34m{tape[:headPosition]}\033[0m", end="")
             print(f"\033[32m{tape[headPosition:headPosition+1]}\033[0m", end="")
             print(f"\033[34m{tape[headPosition+1:]}\033[0m", end="")
-            sleep(0.5)
+            sleep(sleepTime)
 
 
 def readTransitions(states, acceptState, rejectState, tapeAlphabet):
@@ -261,7 +262,8 @@ def displayMenu():
     print("3. Mostrar dados da Máquina de Turing")
     print("4. Salvar Máquina de Turing")
     print("5. Carregar Máquina de Turing")
-    print("6. Encerrar programa")
+    print("6. Configurar simulação")
+    print("7. Encerrar programa")
 
 def displayTuringMachine(TuringMachine):
     print(f"Estados: {TuringMachine.states}")
@@ -276,6 +278,8 @@ def displayTuringMachine(TuringMachine):
 
 def main():
     tm = None
+    global showAll
+    global sleepTime
 
     while True:
         displayMenu()
@@ -307,6 +311,28 @@ def main():
             except FileNotFoundError:
                 print(f"Erro: Arquivo '{filename}' não encontrado.")
         elif choice == '6':
+            while True:
+                if showAll == False:
+                    mode = "Linha Unica"
+                else:
+                    mode = "Linha a Linha"
+                print(f"Modo atual: {mode}  Delay Atual: {sleepTime}")
+                choice = input("1. Mostar modificações da fita linha a linha.\n2. Mostrar modificações da fita em linha única\n3. Alterar delay entre transição\n4. Voltar\nDigite uma opção:")
+                if choice == '1':
+                    showAll = True
+                    break
+                elif choice == '2':
+                    showAll = False
+                    break
+                elif choice == '3':
+                    sleepTime = float(input("Insira o delay entre transição:"))
+                    break
+                elif choice == '4':
+                    break
+                else:
+                    print("Opção Invalida! Tente novamente.")
+
+        elif choice == '7':
             print("Encerrando programa...")
             break
         else:
